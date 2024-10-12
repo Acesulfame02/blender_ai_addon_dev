@@ -1,0 +1,45 @@
+# AI-Driven Character Animation Addon for Blender
+## Overview
+This addon uses AI to animate characters in Blender. It uses a pre-trained model to predict the pose of the character based on input data, and then applies that pose to the character's rig.
+
+## Installation
+1. Download the addon from the repository.
+Extract the contents of the zip file to a directory of your choice.
+2. Open Blender and go to the "Edit" menu, then select "Preferences".
+3. In the "Add-ons" tab, click "Install..." and select the directory where you extracted the addon.
+4. Enable the addon by checking the box next to its name.
+## Requirements
+- Blender 2.80 or later
+- Python 3.7 or later
+The following Python packages:
+- tensorflow
+- numpy
+- mediapipe
+- opencv-python
+## Usage
+Loading the AI Model
+Go to the "Window" menu, then select "Toggle System Console" to open the console.
+Run the "Load AI Model" operator by typing bpy.ops.ai.load_model() in the console.
+The addon will attempt to load the AI model from the models/saved_models/action_model.keras file in the addon's directory. If the file is not found, an error message will be displayed.
+## Animating the Character
+Select the rigged character object in the scene.
+Go to the "Window" menu, then select "Toggle System Console" to open the console.
+Run the "Animate Character" operator by typing bpy.ops.ai.animate_character() in the console.
+The addon will use the loaded AI model to predict the pose of the character and apply it to the rig.
+## Webcam Animation
+Select the rigged character object in the scene.
+Go to the "Window" menu, then select "Toggle System Console" to open the console.
+Run the "Webcam Animate Rig" operator by typing bpy.ops.ai.webcam_animate() in the console.
+The addon will use the webcam to capture video and apply the predicted pose to the rig in real-time.
+## Troubleshooting
+If the AI model fails to load, check that the models/saved_models/action_model.keras file exists in the addon's directory.
+If the character's rig is not updating correctly, check that the rig is selected and that the rig_object_name property is set correctly in the scene.
+Known Issues
+The addon may not work correctly with all types of rigs or characters.
+The webcam animation feature may not work correctly on all systems.
+## Future Development
+Improve the accuracy of the AI model
+Add support for more types of rigs and characters
+Improve the performance of the webcam animation feature
+## License
+This addon is licensed under the MIT License. See the LICENSE file for details.
