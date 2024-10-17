@@ -2,7 +2,7 @@ import os
 import numpy as np
 import sys
 from sklearn.model_selection import train_test_split
-from keras.utils import to_categorical
+from keras.api.utils import to_categorical
 
 # Define paths and parameters
 BASE_PATH = os.path.join(os.getenv('APPDATA'), 'Blender Foundation', 'Blender', '4.2', 'scripts', 'addons', 'kma')

@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from keras.models import load_model
+from keras.api.models import load_model
 
 # Define paths
 BASE_PATH = os.path.join(os.getenv('APPDATA'), 'Blender Foundation', 'Blender', '4.2', 'scripts', 'addons', 'kma')
