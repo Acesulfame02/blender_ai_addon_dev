@@ -21,7 +21,7 @@ class AI_OT_LoadModel(bpy.types.Operator):
             return {'CANCELLED'}
         
         try:
-            model = load_ai_model(model_path)
+            model = load_ai_model(self, model_path)
             if model is None:
                 raise ValueError("Model loading returned None.")
             

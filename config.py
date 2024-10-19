@@ -1,5 +1,6 @@
 import os
-
+import logging
+from datetime import datetime
 class Config:
     def __init__(self):
         self.base_path = os.path.dirname(os.path.abspath(__file__))
@@ -19,3 +20,11 @@ class Config:
 
     def get_addon_path(self):
         return self.base_path
+    
+    def setup_logging(self):
+        logging.basicConfig(
+            filename=self.log_path,
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
