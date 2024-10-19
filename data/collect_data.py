@@ -2,6 +2,11 @@ import cv2
 import numpy as np
 import os
 import mediapipe as mp
+import sys
+
+# Adjust the path to ensure the 'config.py' file can be found
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from config import Config
 
 # Initialize MediaPipe holistic model (which includes body, hands, and face landmarks)

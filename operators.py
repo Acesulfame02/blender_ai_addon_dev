@@ -1,7 +1,7 @@
 import bpy
-from addon_operators.animation_operators import AI_OT_AnimateCharacter
-from addon_operators.model_operators import AI_OT_LoadModel
-from addon_operators.webcam_operators import AI_OT_WebcamAnimate
+from .addon_operators.animation_operators import AI_OT_AnimateCharacter
+from .addon_operators.model_operators import AI_OT_LoadModel
+from .addon_operators.webcam_operators import AI_OT_WebcamAnimate
 
 def register():
     bpy.utils.register_class(AI_OT_LoadModel)

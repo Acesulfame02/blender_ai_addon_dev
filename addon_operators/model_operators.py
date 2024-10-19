@@ -1,7 +1,7 @@
 import bpy
 import os
 
-from utilfunc.ai_models import load_ai_model
+from ..utilfunc.ai_models import load_ai_model
 
 global_model_store = {}
 
