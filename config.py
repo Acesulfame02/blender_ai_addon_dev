@@ -6,7 +6,7 @@ class Config:
         self.raw_data_path = os.path.join(self.base_path, 'data', 'raw', 'videos')
         self.processed_data_path = os.path.join(self.base_path, 'data', 'processed', 'keypoints')
         self.model_path = os.path.join(self.base_path, 'models', 'saved_models', 'action_model.keras')
-        self.log_path = os.path.join(self.base_path, 'logs', 'app.log')
+        self.log_path = os.path.join(self.base_path, 'models', 'logs', 'app.log')
 
         # Ensure directories exist
         os.makedirs(self.raw_data_path, exist_ok=True)
