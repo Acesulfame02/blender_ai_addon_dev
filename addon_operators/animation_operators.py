@@ -1,6 +1,6 @@
 import bpy
 import numpy as np
-from ..utilfunc.utils import update_rig_with_landmarks, calculate_arm_length
+from ..utilfunc.utils import update_rig_with_landmarks
 from .model_operators import global_model_store
 
 class AI_OT_AnimateCharacter(bpy.types.Operator):
@@ -37,13 +37,11 @@ class AI_OT_AnimateCharacter(bpy.types.Operator):
 
         # Apply the keypoints frame by frame
         for frame_idx, prediction in enumerate(interpolated_predictions):
-            efficient_keypoints = self.extract_efficient_keypoints(prediction)  # Extract key joints
-            left_arm_length = calculate_arm_length(obj, ['hand_ik.L', 'forearm_tweak.L', 'upper_arm_tweak.L.001'])
-            right_arm_length = calculate_arm_length(obj, ['hand_ik.R', 'forearm_tweak.R', 'upper_arm_tweak.R.001'])
+            efficient_keypoints = self.extract_efficient_keypoints(prediction)
             
             # Apply keypoints to the left and right arms
-            update_rig_with_landmarks(obj, efficient_keypoints[:8], "Left", left_arm_length)  # First 4 points for left side
-            update_rig_with_landmarks(obj, efficient_keypoints[8:], "Right", right_arm_length)  # Next 4 points for right side
+            update_rig_with_landmarks(obj, efficient_keypoints[:8], "Left")  # First 4 points for left side
+            update_rig_with_landmarks(obj, efficient_keypoints[8:], "Right")  # Next 4 points for right side
 
             bpy.context.scene.frame_set(frame_idx)
 
