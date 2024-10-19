@@ -1,3 +1,2 @@
-## Folders Containing Raw data and keypoints
-data/raw/videos/**.mp4
-data/processed/keypoints/**.npy
+*.mp4
+*.npy
