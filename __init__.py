@@ -9,7 +9,7 @@ bl_info = {
     "category": "Animation",
 }
 
-from .operators import AI_OT_LoadModel, AI_OT_AnimateCharacter, AI_OT_WebcamAnimate
+from .operators import register as register_operators, unregister as unregister_operators
 from .panels import AI_PT_AnimationPanel
 
 REQUIRED_PACKAGES = ["tensorflow", "numpy", "mediapipe", "opencv-python", "scikit-learn"]
@@ -30,9 +30,7 @@ def check_and_install_packages(packages):
 def register():
     check_and_install_packages(REQUIRED_PACKAGES)
     
-    bpy.utils.register_class(AI_OT_LoadModel)
-    bpy.utils.register_class(AI_OT_AnimateCharacter)
-    bpy.utils.register_class(AI_OT_WebcamAnimate)
+    register_operators()
     bpy.utils.register_class(AI_PT_AnimationPanel)
 
     bpy.types.Scene.rig_object_name = bpy.props.StringProperty(
@@ -41,9 +39,7 @@ def register():
     )
 
 def unregister():
-    bpy.utils.unregister_class(AI_OT_LoadModel)
-    bpy.utils.unregister_class(AI_OT_AnimateCharacter)
-    bpy.utils.unregister_class(AI_OT_WebcamAnimate)
+    unregister_operators()
     bpy.utils.unregister_class(AI_PT_AnimationPanel)
 
     del bpy.types.Scene.rig_object_name
