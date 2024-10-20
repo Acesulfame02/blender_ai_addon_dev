@@ -28,14 +28,8 @@ def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     return image, results
 
-# Function to draw essential arm and hand landmarks on the image
+# Function to draw essential arm landmarks on the image
 def draw_arm_landmarks(image, results):
-    # Draw left and right hand landmarks
-    if results.left_hand_landmarks:
-        mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
-    if results.right_hand_landmarks:
-        mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
-
     # Draw shoulders, elbows, and wrists (pose landmarks)
     if results.pose_landmarks:
         pose_landmark_idxs = [11, 12, 13, 14, 15, 16]  # Shoulders, elbows, wrists
@@ -44,23 +38,21 @@ def draw_arm_landmarks(image, results):
             y = int(results.pose_landmarks.landmark[idx].y * image.shape[0])
             cv2.circle(image, (x, y), 5, (0, 255, 0), -1)
 
-# Function to extract keypoints for essential body and hand parts
+# Function to extract keypoints for essential body parts
 def extract_arm_keypoints(results):
     def convert_to_normalized_coordinates(keypoints):
         """ Convert keypoints to a format normalized for Blender. """
         normalized_keypoints = []
         for kp in keypoints:
-            x = (kp[0] - 0.5) * 0.1
-            y = (kp[2] - 0.5) * 0.1  # Swap y and z
-            z = (kp[1] - 0.5) * 0.1
+            x = np.clip((kp[0] - 0.5) * 0.1, -1, 1)
+            y = np.clip((kp[2] - 0.5) * 0.1, -1, 1)  # Swap y and z
+            z = np.clip((kp[1] - 0.5) * 0.1, -1, 1)
             normalized_keypoints.append((x, z, -y))
         return np.array(normalized_keypoints).flatten()
 
-    # Initialize arrays for pose (shoulder, elbow, wrist) and hand keypoints
+    # Initialize arrays for pose (shoulder, elbow, wrist)
     left_arm = np.zeros(9)  # Left shoulder, left elbow, left wrist
     right_arm = np.zeros(9)  # Right shoulder, right elbow, right wrist
-    lh = np.zeros(63)  # Left hand keypoints (21 * 3)
-    rh = np.zeros(63)  # Right hand keypoints (21 * 3)
 
     # Extract pose landmarks for shoulders, elbows, wrists
     if results.pose_landmarks:
@@ -71,22 +63,12 @@ def extract_arm_keypoints(results):
         ])
         right_arm = convert_to_normalized_coordinates([
             (results.pose_landmarks.landmark[12].x, results.pose_landmarks.landmark[12].y, results.pose_landmarks.landmark[12].z),  # Right shoulder
-            (results.pose_landmarks.landmark[14].x, results.pose_landmarks.landmark[14].y, results.pose_landmarks.landmark[14].z),  # Right elbow
+            (results.pose_landmarks.landmark[14].x, results.pose_landmarks.landmark[14].y, results.pose_landmarks.landmark[14].z),  # Right elbow 
             (results.pose_landmarks.landmark[16].x, results.pose_landmarks.landmark[16].y, results.pose_landmarks.landmark[16].z)   # Right wrist
         ])
 
-    # Extract hand landmarks for both hands
-    if results.left_hand_landmarks:
-        lh = convert_to_normalized_coordinates(
-            [(res.x, res.y, res.z) for res in results.left_hand_landmarks.landmark]
-        )
-    if results.right_hand_landmarks:
-        rh = convert_to_normalized_coordinates(
-            [(res.x, res.y, res.z) for res in results.right_hand_landmarks.landmark]
-        )
-
-    # Return concatenated keypoints array (left arm, right arm, left hand, right hand)
-    return np.concatenate([left_arm, right_arm, lh, rh])
+    # Return concatenated keypoints array (left arm, right arm)
+    return np.concatenate([left_arm, right_arm])
 
 # Create folders for data storage
 for action in config.actions:
@@ -95,7 +77,7 @@ for action in config.actions:
         video_output_path = os.path.join(config.processed_data_path, action, video_file.split('.')[0])
         os.makedirs(video_output_path, exist_ok=True)
 
-# Process videos and extract keypoints for arm movements and hands
+# Process videos and extract keypoints for arm movements
 for action in config.actions:
     action_path = os.path.join(config.raw_data_path, action)
     for video_file in os.listdir(action_path):

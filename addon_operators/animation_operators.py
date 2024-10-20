@@ -1,7 +1,12 @@
 import bpy
 import numpy as np
-from ..utilfunc.utils import update_rig_with_landmarks
+import os
+from ..utilfunc.utils import update_rig_with_model_keypoints, normalize_keypoints
 from .model_operators import global_model_store
+
+# Define path to log file
+DOWNLOADS_PATH = os.path.join(os.path.expanduser('~'), 'Downloads')
+LOG_FILE = os.path.join(DOWNLOADS_PATH, 'arm_control_names.txt')
 
 class AI_OT_AnimateCharacter(bpy.types.Operator):
     bl_idname = "ai.animate_character"
@@ -9,77 +14,78 @@ class AI_OT_AnimateCharacter(bpy.types.Operator):
     bl_description = "Animate the character using the AI model"
 
     def execute(self, context):
-        # Load the AI model from the global store
         model = global_model_store.get('ai_model')
         if model is None:
             self.report({'ERROR'}, "AI model not loaded")
             return {'CANCELLED'}
         
-        # Get the rig object from Blender
-        obj = bpy.data.objects.get(context.scene.rig_object_name)
-        if obj is None:
+        rig = bpy.data.objects.get(context.scene.rig_object_name)
+        if rig is None:
             self.report({'ERROR'}, f"Rig object '{context.scene.rig_object_name}' not found")
             return {'CANCELLED'}
-        
-        # Generate or load your actual input sequence (shape: [num_frames, 30, 4320])
-        # Example: You can load real data from a file or generate based on your application
-        input_sequence = np.random.rand(30, 30, 4320)  # Example random data, replace with actual input data
-        
-        # Predict using the AI model
+
+        # Get model predictions and normalize them
         try:
-            predictions = model.predict(input_sequence)  # Pass actual input here
-        except Exception as e:
-            self.report({'ERROR'}, f"Prediction failed: {str(e)}")
+            input_sequence = self.get_model_predictions(model)
+            normalized_sequence = normalize_keypoints(input_sequence)
+        except ValueError as e:
+            self.report({'ERROR'}, str(e))
             return {'CANCELLED'}
 
-        # Interpolate predictions for smoother animation
-        interpolated_predictions = self.interpolate_predictions(predictions, factor=4)
+        # Log the raw and normalized predictions to a file for debugging
+        self.log_predictions(input_sequence, normalized_sequence)
 
-        # Apply the keypoints frame by frame
-        for frame_idx, prediction in enumerate(interpolated_predictions):
-            efficient_keypoints = self.extract_efficient_keypoints(prediction)
-            
-            # Apply keypoints to the left and right arms
-            update_rig_with_landmarks(obj, efficient_keypoints[:8], "Left")  # First 4 points for left side
-            update_rig_with_landmarks(obj, efficient_keypoints[8:], "Right")  # Next 4 points for right side
-
-            bpy.context.scene.frame_set(frame_idx)
+        # Apply keypoints for each frame
+        for frame_idx, keypoints in enumerate(normalized_sequence[0]):  # [0] to get the first (and only) batch
+            bpy.context.scene.frame_set(frame_idx + 1)  # +1 because Blender starts at frame 1
+            update_rig_with_model_keypoints(rig, keypoints)
 
         self.report({'INFO'}, "Character animated successfully")
         return {'FINISHED'}
 
-    def extract_efficient_keypoints(self, prediction):
+    def get_model_predictions(self, model):
         """
-        Extract the keypoints for shoulders, elbows, and wrists from the prediction.
-        Assuming that the prediction shape is (99,) for 33 keypoints with x, y, z coordinates.
+        Generate predictions from the AI model. Ensure the input has the correct shape (batch_size, time_steps, feature_size).
         """
-        keypoints = prediction.reshape(-1, 3)  # Reshape into (33, 3)
+        # Correctly shape the input to match the model's requirements: (batch_size, time_steps, feature_size)
+        batch_size = 1
+        time_steps = 30  # Adjusted time steps
+        feature_size = 18  # Feature size per time step
 
-        # Define indices of key joints (this may vary depending on the model output format)
-        key_indices = [
-            0, 1,  # Left and right shoulder
-            2, 3,  # Left and right elbow
-            4, 5,  # Left and right wrist
-            6, 7   # Optional: thumb tips (if you want more detailed hand movements)
-        ]
+        # Reshape input to (batch_size, time_steps, feature_size)
+        input_data = np.random.rand(batch_size, time_steps, feature_size)  # Example input with correct shape
 
-        # Extract only key joints
-        efficient_keypoints = keypoints[key_indices]
-        return efficient_keypoints.flatten()
+        # Make predictions
+        predictions = model.predict(input_data)
 
-    def interpolate_predictions(self, predictions, factor=2):
+        # Check if predictions are valid
+        if predictions is None or predictions.shape[0] == 0:
+            self.log_error("No keypoints returned by the model.")
+            raise ValueError("No keypoints available. Please check the model.")
+
+        if np.all(predictions == 0):
+            self.log_error("Model returned all zero keypoints. Please consider retraining the model.")
+            raise ValueError("Model returned zero keypoints. Retrain the model.")
+
+        return predictions
+
+
+    def log_predictions(self, raw_predictions, normalized_predictions):
         """
-        Interpolate between predictions to create smoother transitions for animation.
+        Log both raw and normalized predictions to a text file for debugging.
         """
-        interpolated = []
-        for i in range(len(predictions) - 1):
-            start = predictions[i]
-            end = predictions[i + 1]
-            for j in range(factor):
-                t = j / factor
-                interpolated.append(start * (1 - t) + end * t)
-        interpolated.append(predictions[-1])  # Add the last prediction
-        return np.array(interpolated)
+        with open(LOG_FILE, 'a') as log_file:
+            log_file.write(f"Raw Model Predictions:\n{raw_predictions}\n")
+            log_file.write(f"Normalized Model Predictions:\n{normalized_predictions}\n")
+        print(f"Logged model predictions to {LOG_FILE}")
+
+    def log_error(self, message):
+        """
+        Log errors to a file located in the Downloads directory.
+        """
+        with open(LOG_FILE, 'a') as log_file:
+            log_file.write(f"Error: {message}\n")
+        print(f"Logged error: {message}")
 
 def register():
     bpy.utils.register_class(AI_OT_AnimateCharacter)
