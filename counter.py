@@ -5,9 +5,12 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 import time
 from PIL import Image
+from config import Config
 
+# Initialize Config
+config = Config()
 # Path to the model
-model_path = 'd:/school/practical_visual_studio/blender_ai_addon_dev/models/saved_models/action_model.keras'
+model_path = config.model_path
 
 def load_ai_model(model_path):
     try:
@@ -93,7 +96,7 @@ def main():
     predictions = generate_sequence(model, num_frames=1)
     keypoints = interpret_output(predictions)
     
-    output_dir = 'keypoint_frames'
+    output_dir = config.log_path + '/keypoints_frames'
     os.makedirs(output_dir, exist_ok=True)
     
     for frame in range(30):
