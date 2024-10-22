@@ -1,183 +1,145 @@
-# AI-Driven Character Animation Addon for Blender
+# AI-Powered Character Animation Addon for Blender
 
 ## Overview
 
-The **AI-Driven Character Animation Addon** brings automated, AI-based animation to Blender. Using a pre-trained deep learning model, this addon predicts character poses and applies them to a rig, enabling game developers and animators to streamline character animation workflows. The addon supports both pre-trained model-based animation and live webcam-driven real-time animation.
+The **AI-Powered Character Animation Addon** brings advanced, AI-driven animation capabilities to Blender. This addon integrates pre-trained deep learning models to automate the process of character animation, focusing on realistic hand movements with future goals to incorporate walking, talking, emotional expressions, and other complex behaviors. It supports both real-time animation via webcam input and pre-trained AI model-based animation, allowing game developers and animators to streamline their workflow.
 
-## Project Goals
+## Project Objectives
 
-- Provide a Blender addon that automates character rig animation using AI.
-- Allow users to animate rigs using live webcam input.
-- Enhance productivity by automating repetitive animation tasks like hand and arm movements.
-- Offer compatibility with a variety of rigs (such as Rigify) while allowing flexibility for custom rig structures.
-- Improve the addon’s AI model to handle more complex animations and provide better accuracy.
+### 1.3.1 Primary Objective
+
+To develop an AI-driven Blender add-on that enables game developers to create realistic 3D character animations with a focus on hand movements. Future iterations will include walking, talking, and other complex animations.
+
+### 1.3.2 Specific Objectives
+
+- **AI Model Integration**: Integrate AI models for simulating character animations, with a focus on hand movements.
+- **User-Friendly Interface**: Provide a seamless, easy-to-use interface for accessing hand animation features.
+- **Real-Time Responsiveness**: Enable real-time hand movement animations through webcam input.
+- **Data Collection**: Capture and preprocess diverse datasets of human hand movements for training AI models.
+- **Evaluation**: Assess the effectiveness of the add-on in improving animation quality, usability, and workflow for hand animations.
+
+## Achieved Objectives
+
+- **Blender Add-on with AI Integration**: Successfully built the AI-driven add-on that can animate character hand movements.
+- **User Interface Enhancements**: Created a user-friendly interface with dropdowns for easier interaction with rig and animation options.
+- **Webcam Integration**: Implemented real-time hand animation via webcam input, allowing for immediate feedback and keypoint capture.
+- **Data Export**: Ability to export hand movement keypoints captured through the webcam for future model training.
 
 ## Features
 
-- **AI-Based Pose Prediction**: Load pre-trained AI models to predict the character’s pose and animate the rig automatically.
-- **Real-time Webcam Animation**: Capture webcam input and use pose detection to animate the rig in real-time.
-- **Rig Compatibility**: Supports standard Blender rigs (e.g., Rigify), with the ability to adapt to custom rigs via bone mappings.
-- **Modular Design**: Easy to extend the functionality, add new rig structures, or train with custom AI models.
+### 1.4.1 Key Features
 
----
+- **AI-Driven Hand Animation**: Use a pre-trained AI model to animate character hands based on human hand movement data.
+- **Webcam-Driven Real-Time Animation**: Capture movements through a webcam and animate rigged characters in real-time.
+- **Keypoints Export**: Export captured keypoints to `.json` for further use in training or refining models.
+- **User-Friendly Interface**: Includes dropdown menus for rig selection, animation options, and webcam features.
+  
+### 1.4.2 Interface Options
+
+- **Object Rig Name Dropdown**: Select the rigged object to animate in Blender.
+- **Animation Dropdown**:
+  - **Load Model**: Load the pre-trained AI model for animation.
+  - **Animate Character**: Animate the character using the loaded model.
+- **Webcam Dropdown**:
+  - **Get Keypoints**: Capture and save keypoints in `.json` format for future use.
+  - **Use Webcam**: Animate the rig in real-time using webcam input.
+- **Train Dropdown**: Placeholder for future training options.
 
 ## Installation
 
-### Step 1: Download and Extract
+### 1.5.1 Step 1: Clone Repository
 
-1. Download the addon from the repository.
-2. Extract the contents of the `.zip` file to a directory of your choice.
+Clone the repository:
+```bash
+git clone https://github.com/Acesulfame02/blender_ai_addon_dev.git
+```
 
-### Step 2: Install in Blender
+### 1.5.2 Step 2: Install Addon in Blender
 
-1. Open Blender and go to the **Edit** menu, then select **Preferences**.
-2. In the **Add-ons** tab, click **Install...** and navigate to the directory where you extracted the addon.
-3. Select the addon’s `.py` file and click **Install**.
-4. Enable the addon by checking the box next to its name.
+1. Open Blender and go to **Edit > Preferences**.
+2. In the **Add-ons** tab, click **Install...** and navigate to the directory containing the `.py` files.
+3. Select the add-on file and click **Install Add-on**.
+4. Enable the add-on by checking the box next to its name.
 
-### Step 3: Install Dependencies
+### 1.5.3 Step 3: Install Python Dependencies
 
-The addon requires several Python libraries that are not bundled with Blender by default:
-- **TensorFlow**
-- **NumPy**
-- **mediapipe**
-- **opencv-python**
-
-To install them:
-1. Open the **Blender System Console** (from the **Window** menu, select **Toggle System Console**).
-2. In the console, type:
-   ```bash
-   bpy.ops.wm.console_toggle()  # Open the system console within Blender
-   ```
-
-3. Install dependencies by running:
-   ```bash
-   import subprocess
-   subprocess.check_call([bpy.app.binary_path_python, '-m', 'pip', 'install', 'tensorflow', 'numpy', 'mediapipe', 'opencv-python'])
-   ```
-
----
-
-## Requirements
-
-- **Blender 2.80+**
-- **Python 3.7+**
-- The following Python packages must be installed inside Blender’s Python environment:
-  - TensorFlow
-  - NumPy
-  - Mediapipe
-  - OpenCV-Python
-
----
+Ensure you have installed the following dependencies in Blender’s Python environment:
+```bash
+pip install tensorflow numpy mediapipe opencv-python
+```
 
 ## Usage
 
-### 1. **Loading the AI Model**
+### 1.6.1 Loading the AI Model
 
-1. Open the Blender **System Console** (from the **Window** menu, select **Toggle System Console**).
-2. Run the operator to load the AI model by typing:
-   ```python
-   bpy.ops.ai.load_model()
-   ```
-3. The model will load from the `models/saved_models/action_model.keras` file. If it is not found, you will see an error message in the console.
+1. Select the rigged character in your Blender scene.
+2. Open the **Animation** dropdown and click **Load Model**.
+3. The model will load from the `models/saved_models/action_model.keras` file.
 
-### 2. **Animating the Character**
+### 1.6.2 Animating the Character
 
-1. Select the rigged character object in your scene.
-2. Open the **System Console** to monitor progress.
-3. Run the "Animate Character" operator by typing:
-   ```python
-   bpy.ops.ai.animate_character()
-   ```
-4. The addon will predict the character’s pose using the loaded AI model and apply it to the selected rig over multiple frames.
+1. After loading the model, go to the **Animation** dropdown and click **Animate Character**.
+2. The AI model will predict hand movements and animate the rigged character accordingly.
 
-### 3. **Webcam Animation (Real-time)**
+### 1.6.3 Webcam-Driven Real-Time Animation
 
-1. Select the rigged character object.
-2. Open the **System Console**.
-3. Run the "Webcam Animate Rig" operator by typing:
-   ```python
-   bpy.ops.ai.webcam_animate()
-   ```
-4. The webcam will capture your movement and animate the rig in real-time. You will see live feedback on the screen as well as the rig’s movement in Blender.
+1. Select the rigged character.
+2. Use the **Webcam** dropdown to choose **Use Webcam**.
+3. The webcam captures movements and animates the rig in real-time.
 
----
+### 1.6.4 Exporting Keypoints
+
+1. Use the **Webcam** dropdown and select **Get Keypoints**.
+2. Captured keypoints are saved in `.json` format in `data/json_coordinates_for_blender`, useful for training future AI models.
 
 ## Advanced Configuration
 
-### Customizing Bone Mappings
+### 1.7.1 Customizing Bone Mappings
 
-If your rig uses custom bone names, you can modify the mappings in the script to match your rig’s structure. The default mappings work with Rigify rigs.
+If your rig uses custom bone names, modify the `left_arm_bones` and `right_arm_bones` arrays in the script to match your rig structure.
 
-In the file where bones are applied, update the `left_arm_bones` and `right_arm_bones` arrays:
 ```python
 left_arm_bones = ['shoulder.L', 'elbow.L', 'hand_fk.L']
 right_arm_bones = ['shoulder.R', 'elbow.R', 'hand_fk.R']
 ```
-Replace these bone names with the names used in your rig.
 
-### Adjusting Clamping Values
+### 1.7.2 Adjusting Keypoint Scaling
 
-To allow more freedom in motion, modify the clamping logic to adjust the range of movement. By default, bone movements are clamped to avoid excessive transformations:
-```python
-def clamp(value, min_value, max_value):
-    return max(min_value, min(value, max_value))
-```
-You can adjust the scaling factor or remove the clamping to allow a wider range of movement.
-
----
+The captured keypoints are normalized for better visibility in Blender. You can modify the scaling factors if necessary by changing the `normalize_keypoints()` function in `utils.py`.
 
 ## Troubleshooting
 
-### 1. AI Model Fails to Load
+### 1.8.1 Common Errors
 
-If the AI model fails to load:
-- Verify that the model file (`action_model.keras`) exists in the directory `models/saved_models/` inside the addon folder.
-- Check for any error messages in the system console and ensure all required dependencies are installed.
+- **AI Model Not Loaded**: Ensure the `action_model.keras` file is located in the `models/saved_models` directory.
+- **Webcam Input Issues**: Verify your webcam is accessible by OpenCV and ensure all dependencies are installed.
 
-### 2. Rig Not Updating Correctly
+### 1.8.2 Keypoints Not Being Captured
 
-If the rig isn't animating correctly:
-- Ensure the rig object is selected in the scene and the `rig_object_name` property is set correctly.
-- Ensure bone names match between the rig and the script.
-
-### 3. Webcam Animation Not Working
-
-If webcam input doesn't animate the rig:
-- Ensure that your webcam is accessible by OpenCV.
-- Check that your system meets the hardware requirements to process real-time animation.
-- Verify that the `mediapipe` library is properly installed and working in Blender’s Python environment.
-
----
+If keypoints are not captured:
+- Ensure the webcam is working and that `mediapipe` is correctly processing the input.
 
 ## Known Issues
 
-- The addon may not work with all rig types. Some rigs may require manual adjustments to the bone mappings.
-- Webcam animation may not work smoothly on all systems due to hardware or performance limitations.
-
----
+- The add-on is currently optimized for hand movements. Future iterations will expand to include full-body animations.
+- Real-time webcam input may lag on lower-end systems.
 
 ## Future Development
 
-- **Improved AI Model Accuracy**: Enhance the AI model to better handle complex poses, such as walking, dancing, and emotional expressions.
-- **Expanded Rig Compatibility**: Add support for more types of rigs and characters beyond the default Rigify setup.
-- **Performance Optimizations**: Optimize the real-time webcam animation feature for smoother, higher-FPS performance on more systems.
-- **UI Improvements**: Add a custom Blender UI panel to replace the need to use the system console for running operators.
-
----
+- **Full-Body Animation**: Expand the model to handle walking, talking, and emotional expressions.
+- **Improved AI Models**: Refine the models for smoother animations and better accuracy.
+- **Training Interface**: Provide an interface for users to train their own models within Blender.
 
 ## Contribution Guide
 
-We welcome contributions to improve the addon:
-- Add features such as support for additional AI models.
-- Improve the animation quality and rig compatibility.
-- Optimize the performance of the real-time animation feature.
-  
-Please fork the repository, create a feature branch, and submit a pull request with your changes.
+We welcome contributions to the project! To contribute:
 
----
+1. **Fork the Repository** on GitHub.
+2. Create a **Feature Branch** for your changes.
+3. Submit a **Pull Request** with a detailed explanation.
+
+Please **do not directly commit to the main branch**.
 
 ## License
 
-This addon is licensed under the MIT License. See the `LICENSE` file for details.
-
+This add-on is licensed under the MIT License. See the `LICENSE` file for details.

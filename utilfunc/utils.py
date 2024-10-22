@@ -10,6 +10,30 @@ def calculate_arm_length(rig, hand_bones):
     shoulder_pos = rig.matrix_world @ rig.pose.bones[hand_bones[1]].head
     return (hand_pos - shoulder_pos).length
 
+def get_processed_keypoints(rig, hand_type):
+    """
+    Returns the processed keypoints (after applying transformations) in world space for the rig.
+    """
+    if hand_type == "Left":
+        hand_bones = ['hand_ik.L', 'forearm_tweak.L', 'upper_arm_tweak.L.001']
+    else:
+        hand_bones = ['hand_ik.R', 'forearm_tweak.R', 'upper_arm_tweak.R.001']
+
+    keypoints = []
+    
+    # Retrieve the world-space positions of the hand, forearm, and upper arm bones
+    for bone_name in hand_bones:
+        bone = rig.pose.bones.get(bone_name)
+        if bone:
+            world_position = rig.matrix_world @ bone.head
+            keypoints.append({
+                'x': world_position.x,
+                'y': world_position.y,
+                'z': world_position.z
+            })
+
+    return keypoints
+
 def update_rig_with_landmarks(rig, hand_landmarks, hand_type):
     """ Update the rig's arm bones using the hand landmarks """
     try:
