@@ -49,7 +49,7 @@ class AI_OT_AnimateCharacter(bpy.types.Operator):
         """
         # Correctly shape the input to match the model's requirements: (batch_size, time_steps, feature_size)
         batch_size = 1
-        time_steps = 30  # Adjusted time steps
+        time_steps = 8  # Adjusted time steps
         feature_size = 18  # Feature size per time step
 
         # Reshape input to (batch_size, time_steps, feature_size)
