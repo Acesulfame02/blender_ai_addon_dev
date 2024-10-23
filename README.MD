@@ -7,7 +7,7 @@ The **AI-Powered Character Animation Addon** brings advanced, AI-driven animatio
 <p>
   <div style="display: flex; justify-content: center;">
     <figure style="margin: 0 10px;">
-        <img src="https://photos.onedrive.com/3d4c4fe6-fcd5-4a4a-96e5-566a39b705ad" width="200" />
+        <img src="blender_ui_addon.png" width="200" />
         <figcaption>UI</figcaption>
     </figure>
   </div>
