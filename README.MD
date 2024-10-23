@@ -4,6 +4,15 @@
 
 The **AI-Powered Character Animation Addon** brings advanced, AI-driven animation capabilities to Blender. This addon integrates pre-trained deep learning models to automate the process of character animation, focusing on realistic hand movements with future goals to incorporate walking, talking, emotional expressions, and other complex behaviors. It supports both real-time animation via webcam input and pre-trained AI model-based animation, allowing game developers and animators to streamline their workflow.
 
+<p>
+  <div style="display: flex; justify-content: center;">
+    <figure style="margin: 0 10px;">
+        <img src="https://photos.onedrive.com/3d4c4fe6-fcd5-4a4a-96e5-566a39b705ad" width="200" />
+        <figcaption>UI</figcaption>
+    </figure>
+  </div>
+</p>
+
 ## Project Objectives
 
 ### 1.3.1 Primary Objective
